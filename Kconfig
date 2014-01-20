@@ -1,4 +1,8 @@
 comment "Qualcomm Atheros Prima WLAN module"
+config PRIMA_ZTE
+	bool "Enable workarounds to work with ZTE 3.4 Kernel"
+	default y
+
 config PRIMA_WLAN
 	tristate "Qualcomm Atheros Prima WLAN module"
 	default n

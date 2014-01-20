@@ -648,7 +648,9 @@ int wlan_hdd_cfg80211_init(struct device *dev,
 
     wiphy->max_scan_ie_len = SIR_MAC_MAX_IE_LENGTH;
 
+#ifndef CONFIG_PRIMA_ZTE
     wiphy->max_acl_mac_addrs = MAX_ACL_MAC_ADDRESS;
+#endif
 
     /* Supports STATION & AD-HOC modes right now */
     wiphy->interface_modes =   BIT(NL80211_IFTYPE_STATION)
@@ -3052,7 +3054,9 @@ static int wlan_hdd_change_station(struct wiphy *wiphy,
     v_MACADDR_t STAMacAddress;
 #ifdef FEATURE_WLAN_TDLS
     tCsrStaParams StaParams = {0};
+#ifndef CONFIG_PRIMA_ZTE
     tANI_U8 isBufSta = 0;
+#endif
 #endif
     ENTER();
 
@@ -3102,13 +3106,17 @@ static int wlan_hdd_change_station(struct wiphy *wiphy,
           || (pAdapter->device_mode == WLAN_HDD_P2P_CLIENT)) {
 #ifdef FEATURE_WLAN_TDLS
         if (params->sta_flags_set & BIT(NL80211_STA_FLAG_TDLS_PEER)) {
+#ifndef CONFIG_PRIMA_ZTE
             StaParams.capability = params->capability;
+#endif
             StaParams.uapsd_queues = params->uapsd_queues;
             StaParams.max_sp = params->max_sp;
 
+#ifndef CONFIG_PRIMA_ZTE
             if (0 != params->ext_capab_len)
                 vos_mem_copy(StaParams.extn_capability, params->ext_capab,
                              sizeof(StaParams.extn_capability));
+#endif
 
             if (NULL != params->ht_capa)
             {
@@ -3140,18 +3148,22 @@ static int wlan_hdd_change_station(struct wiphy *wiphy,
                                "[%d]: %0x", i, StaParams.supported_rates[i]);
             }
 
+#ifndef CONFIG_PRIMA_ZTE
             if (NULL != params->vht_capa)
             {
                 StaParams.vhtcap_present = 1;
                 vos_mem_copy(&StaParams.VHTCap, params->vht_capa, sizeof(tSirVHTCap));
             }
+#endif
 
+#ifndef CONFIG_PRIMA_ZTE
             if (0 != params->ext_capab_len ) {
                 /*Define A Macro : TODO Sunil*/
                 if ((1<<4) & StaParams.extn_capability[3]) {
                     isBufSta = 1;
                 }
             }
+#endif
             //status = wlan_hdd_tdls_set_peer_caps( mac, params->uapsd_queues,
             //                                      params->max_sp, isBufSta);
             //if (VOS_STATUS_SUCCESS != status) {
@@ -7883,6 +7895,7 @@ int wlan_hdd_cfg80211_set_rekey_data(struct wiphy *wiphy, struct net_device *dev
 }
 #endif /*WLAN_FEATURE_GTK_OFFLOAD*/
 
+#ifndef CONFIG_PRIMA_ZTE
 /*
  * FUNCTION: wlan_hdd_cfg80211_set_mac_acl
  * This function is used to set access control policy
@@ -8014,7 +8027,7 @@ static int wlan_hdd_cfg80211_set_mac_acl(struct wiphy *wiphy,
 
     return 0;
 }
-
+#endif /* CONFIG_PRIMA_ZTE*/
 /*
  * FUNCTION: wlan_hdd_cfg80211_resume_wlan
  * this is called when cfg80211 driver resume
@@ -8181,6 +8194,8 @@ static struct cfg80211_ops wlan_hdd_cfg80211_ops =
 #endif /*FEATURE_WLAN_SCAN_PNO */
      .resume = wlan_hdd_cfg80211_resume_wlan,
      .suspend = wlan_hdd_cfg80211_suspend_wlan,
+#ifndef CONFIG_PRIMA_ZTE
      .set_mac_acl = wlan_hdd_cfg80211_set_mac_acl,
+#endif
 };
 

@@ -5416,6 +5416,9 @@ static boolean hdd_is_5g_supported(hdd_context_t * pHddCtx)
    /* If wcnss_wlan_iris_xo_mode() returns WCNSS_XO_48MHZ(1);
     * then hardware support 5Ghz.
    */
+#ifdef CONFIG_PRIMA_ZTE
+   return true;
+#else
    if (WCNSS_XO_48MHZ == wcnss_wlan_iris_xo_mode())
    {
       hddLog(VOS_TRACE_LEVEL_INFO, "%s: Hardware supports 5Ghz", __func__);
@@ -5427,6 +5430,7 @@ static boolean hdd_is_5g_supported(hdd_context_t * pHddCtx)
                     __func__);
       return false;
    }
+#endif
 }
 
 

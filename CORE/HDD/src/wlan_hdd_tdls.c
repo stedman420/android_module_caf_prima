@@ -927,7 +927,9 @@ int wlan_hdd_tdls_recv_discovery_resp(hdd_adapter_t *pAdapter, u8 *mac)
             "Rssi Threshold met: "MAC_ADDRESS_STR" rssi = %d threshold= %d" ,
              MAC_ADDR_ARRAY(curr_peer->peerMac), curr_peer->rssi,
              pHddTdlsCtx->threshold_config.rssi_trigger_threshold);
+#ifndef CONFIG_PRIMA_ZTE
             cfg80211_tdls_oper_request(pAdapter->dev, curr_peer->peerMac, NL80211_TDLS_SETUP, FALSE, GFP_KERNEL);
+#endif
         }
         else
         {
@@ -2208,9 +2210,11 @@ void wlan_hdd_tdls_indicate_teardown(hdd_adapter_t *pAdapter,
         return;
 
     wlan_hdd_tdls_set_peer_link_status(curr_peer, eTDLS_LINK_TEARING);
+#ifndef CONFIG_PRIMA_ZTE
     cfg80211_tdls_oper_request(pAdapter->dev,
                                curr_peer->peerMac,
                                NL80211_TDLS_TEARDOWN,
                                reason,
                                GFP_KERNEL);
+#endif
 }
